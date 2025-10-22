@@ -6,14 +6,15 @@ import {
   QualityAssessment
 } from '../types';
 
-// Hardcoded for now - environment variables not loading properly
-const API_BASE_URL = 'http://localhost:8000';
+// Use environment variable or fallback to relative path in production
+const API_BASE_URL = process.env.REACT_APP_API_URL || 
+  (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8000');
 
-console.log('=== API CLIENT LOADED - VERSION 2 ===');
-console.log('API_BASE_URL:', API_BASE_URL);
-console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('=================================');
+console.log('API Configuration:', {
+  API_BASE_URL,
+  NODE_ENV: process.env.NODE_ENV,
+  REACT_APP_API_URL: process.env.REACT_APP_API_URL
+});
 
 class APIError extends Error {
   constructor(public status: number, message: string) {
