@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Database, Upload, ShoppingCart, Zap, Wallet } from 'lucide-react';
+import { Database, Upload, ShoppingCart, Zap } from 'lucide-react';
+import WalletConnect from './WalletConnect';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
   const location = useLocation();
 
   const navigation = [
@@ -73,19 +73,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setIsWalletConnected(!isWalletConnected)}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-bold font-poppins transition-all duration-300 transform hover:scale-105 ${
-                  isWalletConnected
-                    ? 'bg-green-500/20 text-green-300 border-2 border-green-400/40 shadow-lg glow-effect'
-                    : 'bg-gradient-primary text-white shadow-lg glow-effect'
-                }`}
-              >
-                <Wallet className="h-5 w-5" />
-                <span>
-                  {isWalletConnected ? 'Connected' : 'Connect Wallet'}
-                </span>
-              </button>
+              <WalletConnect />
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { apiClient, APIError } from '../services/api';
 
 interface UseApiState<T> {
@@ -18,6 +18,15 @@ export function useApi<T>(
     options: UseApiOptions = {}
 ) {
     const { immediate = true, onSuccess, onError } = options;
+    const apiCallRef = useRef(apiCall);
+    const onSuccessRef = useRef(onSuccess);
+    const onErrorRef = useRef(onError);
+    const hasExecutedRef = useRef(false);
+
+    // Update refs on each render
+    apiCallRef.current = apiCall;
+    onSuccessRef.current = onSuccess;
+    onErrorRef.current = onError;
 
     const [state, setState] = useState<UseApiState<T>>({
         data: null,
@@ -29,7 +38,7 @@ export function useApi<T>(
         setState(prev => ({ ...prev, loading: true, error: null }));
 
         try {
-            const response = await apiCall();
+            const response = await apiCallRef.current();
             const data = response.data || response;
 
             setState({
@@ -38,8 +47,8 @@ export function useApi<T>(
                 error: null,
             });
 
-            if (onSuccess) {
-                onSuccess(data);
+            if (onSuccessRef.current) {
+                onSuccessRef.current(data);
             }
 
             return data;
@@ -54,19 +63,20 @@ export function useApi<T>(
                 error: errorMessage,
             });
 
-            if (onError && error instanceof APIError) {
-                onError(error);
+            if (onErrorRef.current && error instanceof APIError) {
+                onErrorRef.current(error);
             }
 
             throw error;
         }
-    }, [apiCall, onSuccess, onError]);
+    }, []);
 
     useEffect(() => {
-        if (immediate) {
+        if (immediate && !hasExecutedRef.current) {
+            hasExecutedRef.current = true;
             execute();
         }
-    }, [execute, immediate]);
+    }, [immediate, execute]);
 
     const retry = useCallback(() => {
         execute();

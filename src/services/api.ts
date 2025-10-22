@@ -6,8 +6,14 @@ import {
   QualityAssessment
 } from '../types';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8000');
+// Hardcoded for now - environment variables not loading properly
+const API_BASE_URL = 'http://localhost:8000';
+
+console.log('=== API CLIENT LOADED - VERSION 2 ===');
+console.log('API_BASE_URL:', API_BASE_URL);
+console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('=================================');
 
 class APIError extends Error {
   constructor(public status: number, message: string) {
@@ -21,6 +27,7 @@ class APIClient {
 
   constructor(baseURL: string = API_BASE_URL) {
     this.baseURL = baseURL;
+    console.log('APIClient initialized with baseURL:', this.baseURL);
   }
 
   private async request<T>(
@@ -28,6 +35,7 @@ class APIClient {
     options: RequestInit = {}
   ): Promise<APIResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
+    console.log('Making request to:', url);
 
     const defaultOptions: RequestInit = {
       headers: {
@@ -38,6 +46,7 @@ class APIClient {
     };
 
     try {
+      console.log('Fetching:', url, 'with options:', defaultOptions);
       const response = await fetch(url, defaultOptions);
 
       if (!response.ok) {

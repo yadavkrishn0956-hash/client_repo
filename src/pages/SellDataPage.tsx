@@ -119,38 +119,46 @@ const SellDataPage: React.FC = () => {
     if (!assessment) return null;
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold text-gray-900">Quality Assessment</h4>
+          <h4 className="font-bold text-white font-poppins">Quality Assessment</h4>
           <QualityIndicator score={assessment.overall_score} />
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-gray-600">Completeness:</span>
-            <span className="ml-2 font-medium">{assessment.metrics.completeness.toFixed(1)}%</span>
+            <span className="text-text-secondary font-nunito">Completeness:</span>
+            <span className="ml-2 font-bold text-white">
+              {(assessment.metrics.completeness > 1 ? assessment.metrics.completeness : assessment.metrics.completeness * 100).toFixed(1)}%
+            </span>
           </div>
           <div>
-            <span className="text-gray-600">Consistency:</span>
-            <span className="ml-2 font-medium">{assessment.metrics.statistical_consistency.toFixed(1)}%</span>
+            <span className="text-text-secondary font-nunito">Consistency:</span>
+            <span className="ml-2 font-bold text-white">
+              {(assessment.metrics.statistical_consistency > 1 ? assessment.metrics.statistical_consistency : assessment.metrics.statistical_consistency * 100).toFixed(1)}%
+            </span>
           </div>
           <div>
-            <span className="text-gray-600">Balance:</span>
-            <span className="ml-2 font-medium">{assessment.metrics.class_balance.toFixed(1)}%</span>
+            <span className="text-text-secondary font-nunito">Balance:</span>
+            <span className="ml-2 font-bold text-white">
+              {(assessment.metrics.class_balance > 1 ? assessment.metrics.class_balance : assessment.metrics.class_balance * 100).toFixed(1)}%
+            </span>
           </div>
           <div>
-            <span className="text-gray-600">Uniqueness:</span>
-            <span className="ml-2 font-medium">{assessment.metrics.duplicates.toFixed(1)}%</span>
+            <span className="text-text-secondary font-nunito">Uniqueness:</span>
+            <span className="ml-2 font-bold text-white">
+              {(assessment.metrics.duplicates > 1 ? assessment.metrics.duplicates : assessment.metrics.duplicates * 100).toFixed(1)}%
+            </span>
           </div>
         </div>
 
         {assessment.explanation && assessment.explanation.length > 0 && (
           <div>
-            <h5 className="font-medium text-gray-900 mb-2">Quality Insights:</h5>
-            <ul className="space-y-1">
+            <h5 className="font-semibold text-white mb-2 font-poppins">Quality Insights:</h5>
+            <ul className="space-y-2">
               {assessment.explanation.map((insight: string, index: number) => (
-                <li key={index} className="text-sm text-gray-600 flex items-start space-x-2">
-                  <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                <li key={index} className="text-sm text-text-secondary font-nunito flex items-start space-x-2">
+                  <CheckCircle className="h-4 w-4 text-green-400 mt-0.5 flex-shrink-0" />
                   <span>{insight}</span>
                 </li>
               ))}
@@ -160,11 +168,11 @@ const SellDataPage: React.FC = () => {
 
         {assessment.recommendations && assessment.recommendations.length > 0 && (
           <div>
-            <h5 className="font-medium text-gray-900 mb-2">Recommendations:</h5>
-            <ul className="space-y-1">
+            <h5 className="font-semibold text-white mb-2 font-poppins">Recommendations:</h5>
+            <ul className="space-y-2">
               {assessment.recommendations.map((rec: string, index: number) => (
-                <li key={index} className="text-sm text-gray-600 flex items-start space-x-2">
-                  <AlertCircle className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                <li key={index} className="text-sm text-text-secondary font-nunito flex items-start space-x-2">
+                  <AlertCircle className="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0" />
                   <span>{rec}</span>
                 </li>
               ))}
@@ -365,7 +373,19 @@ const SellDataPage: React.FC = () => {
             </div>
 
             {/* Upload Button */}
-            <div className="mt-8">
+            <div className="mt-8 space-y-3">
+              {selectedFile && formData.title.trim() && formData.uploader.trim() && (
+                <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-sm">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-text-secondary font-nunito">Estimated Gas Fee:</span>
+                    <span className="text-white font-bold">~0.002 MATIC ($0.001)</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-text-secondary font-nunito">Transaction Time:</span>
+                    <span className="text-accent-cyan font-semibold">~15-30 seconds</span>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={handleUpload}
                 disabled={loading || !selectedFile || !formData.title.trim() || !formData.uploader.trim()}
@@ -403,20 +423,38 @@ const SellDataPage: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="grid grid-cols-1 gap-2 text-sm">
+                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
+                  <div className="grid grid-cols-1 gap-3 text-sm">
                     <div>
-                      <span className="text-gray-600">Dataset CID:</span>
-                      <div className="font-mono text-xs break-all mt-1">{uploadResult.cid}</div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-text-secondary font-nunito">IPFS Hash (CID):</span>
+                        <button
+                          onClick={() => navigator.clipboard.writeText(uploadResult.cid)}
+                          className="text-xs text-accent-cyan hover:text-accent-violet transition-colors"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <div className="font-mono text-xs break-all text-accent-cyan bg-white/5 p-2 rounded">{uploadResult.cid}</div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-gray-600">File Size:</span>
-                        <div className="font-medium">{uploadResult.file_size_mb} MB</div>
+                        <span className="text-text-secondary font-nunito">File Size:</span>
+                        <div className="font-medium text-white">{uploadResult.file_size_mb} MB</div>
                       </div>
                       <div>
-                        <span className="text-gray-600">Status:</span>
-                        <div className="font-medium text-green-600">Listed for Sale</div>
+                        <span className="text-text-secondary font-nunito">Status:</span>
+                        <div className="font-medium text-green-400">✓ Listed for Sale</div>
+                      </div>
+                    </div>
+                    <div className="pt-2 border-t border-white/10">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-text-secondary font-nunito">Smart Contract:</span>
+                        <code className="text-accent-cyan font-mono">0x742d...e416</code>
+                      </div>
+                      <div className="flex items-center justify-between text-xs mt-1">
+                        <span className="text-text-secondary font-nunito">Network:</span>
+                        <span className="text-white font-semibold">Polygon Mumbai</span>
                       </div>
                     </div>
                   </div>
@@ -424,12 +462,12 @@ const SellDataPage: React.FC = () => {
 
                 {renderQualityExplanation(uploadResult.quality_assessment)}
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="bg-accent-cyan/10 border border-accent-cyan/30 rounded-xl p-4">
                   <div className="flex items-start space-x-2">
-                    <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5" />
-                    <div className="text-sm text-blue-800">
-                      <p className="font-medium">Your dataset is now live!</p>
-                      <p>Buyers can discover and purchase your dataset on the marketplace.</p>
+                    <CheckCircle className="h-5 w-5 text-accent-cyan mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-white font-nunito">
+                      <p className="font-bold mb-1">Your dataset is now live!</p>
+                      <p className="text-text-secondary">Buyers can discover and purchase your dataset on the marketplace.</p>
                     </div>
                   </div>
                 </div>

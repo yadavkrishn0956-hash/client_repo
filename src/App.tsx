@@ -7,6 +7,7 @@ import SellDataPage from './pages/SellDataPage';
 import MarketplacePage from './pages/MarketplacePage';
 import PurchasePage from './pages/PurchasePage';
 import DatasetDetailsPage from './pages/DatasetDetailsPage';
+import PaymentFlowDemo from './pages/PaymentFlowDemo';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
               <Route path="/marketplace" element={<MarketplacePage />} />
               <Route path="/dataset/:cid" element={<DatasetDetailsPage />} />
               <Route path="/purchase/:cid" element={<PurchasePage />} />
+              <Route path="/payment-demo" element={<PaymentFlowDemo />} />
             </Routes>
           </Layout>
         </Router>
