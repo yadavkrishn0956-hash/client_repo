@@ -6,9 +6,11 @@ import {
   QualityAssessment
 } from '../types';
 
-// Use environment variable or fallback to relative path in production
+// Use environment variable or fallback to production backend URL
 const API_BASE_URL = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:8000');
+  (process.env.NODE_ENV === 'production' 
+    ? 'https://server-repo-three.vercel.app' 
+    : 'http://localhost:8000');
 
 console.log('API Configuration:', {
   API_BASE_URL,
